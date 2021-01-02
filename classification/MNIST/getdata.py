@@ -1,8 +1,12 @@
+import os
+
 import numpy as np
 from scipy.io import loadmat
 
 from sklearn.datasets import fetch_openml
 
+def get_data1():
+    return os.getcwd()
 
 def get_data():
     def sort_by_target(mnist):
@@ -21,7 +25,8 @@ def get_data():
     #     content = response.read()
     #     f.write(content)
 
-    mnist_path = 'data\mnist\mnist-original.mat'
+    # mnist_path = 'data\mnist\mnist-original.mat'
+    mnist_path = os.path.join("..", "..", "data", "mnist", "mnist-original.mat")
     mnist_raw = loadmat(mnist_path)
     mnist = {
         "data": mnist_raw["data"].T,

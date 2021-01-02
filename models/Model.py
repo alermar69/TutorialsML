@@ -13,19 +13,32 @@ class DataAlg:
 
         self.X = None
         self.y = None
+        self.y_pred = None
 
-        if type(X) == type(pd.DataFrame()):
+        if isinstance(X, pd.core.frame.DataFrame):
             self.data = X.copy()
             self.X = X.copy()
-        if type(y) == type(pd.DataFrame()):
+        if isinstance(y, pd.core.frame.DataFrame):
             self.y = y.copy()
 
+        # Если X или y явлется list, Series или ndarray, делаем их DataFrame
+        if isinstance(X, (list, pd.core.series.Series, np.ndarray)):
+            self.data = pd.DataFrame(X)
+            self.X = self.data.copy()
+        if isinstance(y, (list, pd.core.series.Series, np.ndarray)):
+            self.y = pd.DataFrame(y)
+
+        # Если указан имя столбца по которому надо сделать целевое значение
         if column_target:
             if column_target in self.X.columns.values:
                 self.y = self.X.pop(column_target)
 
         self.X_y = (self.X, self.y)
         self.split_num_cat()
+
+    def split_train_test(self, count=0):
+        if count != 0:
+            X_train, X_test, y_train, y_test = self.X[:count], self.X[count:], self.y[:count], self.y[count:]
 
     def split_num_cat(self):
         # подразумевает, что X - это объект DataFrame
@@ -41,10 +54,10 @@ class DataAlg:
         self._column_dtypes['num'] = self._columns[~is_cat]
 
         self._feature_names = np.empty(0)
-        self._feature_names = np.append(self._feature_names,  self._column_dtypes['num'])
-        self._feature_names = np.append(self._feature_names,  self._column_dtypes['cat'])
+        self._feature_names = np.append(self._feature_names, self._column_dtypes['num'])
+        self._feature_names = np.append(self._feature_names, self._column_dtypes['cat'])
 
-        #ассиметрия----------------------------------------------------------------------------------
+        # ассиметрия----------------------------------------------------------------------------------
         self._skew = self.X.skew()
 
         # выделяем список признаков с небольшой отрицательной асимметрией
@@ -63,15 +76,13 @@ class DataAlg:
 
     def desc(self):
         print('КОЛИЧЕСТВЕННЫЕ ПРИЗНАКИ:')
-        print(' '*5 + 'Имя:    ', self._column_dtypes['num'])
-        print(' '*5 + 'Количество:    ', len(self._column_dtypes['num']))
+        print(' ' * 5 + 'Имя:    ', self._column_dtypes['num'])
+        print(' ' * 5 + 'Количество:    ', len(self._column_dtypes['num']))
         print()
-        print('-'*50)
+        print('-' * 50)
         print('КАТЕГОРИАЛЬНЫЕ ПРИЗНАКИ:')
         print(' ' * 5 + 'Имя:    ', self._column_dtypes['cat'])
         print(' ' * 5 + 'Количество:    ', len(self._column_dtypes['cat']))
-
-
 
 
 def display_scores(scores, name_model=''):
