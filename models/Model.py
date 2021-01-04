@@ -120,3 +120,9 @@ def model_fit_cross(model, X, y, scoring="neg_mean_squared_error", cv=5):
     rmse_scores = np.sqrt(-scores)
     display_scores(rmse_scores, type(model))
     return model, rmse_scores
+
+def printMetrics(ps, rs, fs, conf_mat):
+    print('Presion - ', ps)
+    print('Recall  - ', rs)
+    print('F1      - ', fs)
+    print(conf_mat)

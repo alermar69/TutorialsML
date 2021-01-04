@@ -25,8 +25,9 @@ def get_data():
     #     content = response.read()
     #     f.write(content)
 
-    # mnist_path = 'data\mnist\mnist-original.mat'
+    mnist_path = 'data\mnist\mnist-original.mat'
     mnist_path = os.path.join("..", "..", "data", "mnist", "mnist-original.mat")
+
     mnist_raw = loadmat(mnist_path)
     mnist = {
         "data": mnist_raw["data"].T,
